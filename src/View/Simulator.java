@@ -61,11 +61,8 @@ public class Simulator {
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Ecosystem");
-
-        // Tworzymy symulator (konstruktor ustawi tylko menu)
         Simulator sim = new Simulator();
 
-        // Na start pokazujemy panel ustawień (GameSettings)
         frame.setContentPane(sim.GameSettings);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
