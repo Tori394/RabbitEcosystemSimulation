@@ -27,6 +27,7 @@ public class Simulator {
 
     private List<Rabbit> rabbits;
     private List<Carrot> carrots;
+    private Carrot[][] carrotMap;
 
     private Timer simulationTimer;
 
@@ -51,6 +52,10 @@ public class Simulator {
         carrots = new ArrayList<>();
 
         EntityController.initEntities(rabbitsCount, carrotsCount, TILE_SIZE, GRID_SIZE, rabbits, carrots);
+        carrotMap = new Carrot[GRID_SIZE][GRID_SIZE];
+        for (Carrot c : carrots) {
+            carrotMap[c.getX()][c.getY()] = c;
+        }
 
         SimulationPanel = new MapPanel(GRID_SIZE, TILE_SIZE, WINDOW_SIZE, rabbits, carrots);
 
@@ -65,7 +70,7 @@ public class Simulator {
         simulationTimer = new Timer(500, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                EntityController.step(rabbits, carrots, GRID_SIZE);
+                EntityController.step(rabbits, carrots, carrotMap, GRID_SIZE);
                 SimulationPanel.repaint();
             }
         });

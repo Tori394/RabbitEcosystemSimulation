@@ -9,9 +9,8 @@ import java.util.Random;
 
 public class EntityController {
     private static Random rn = new Random();
-    private static boolean[][] occupied;
 
-    private static int[][] directions = {
+    private static final int[][] directions = {
             {1, 0}, {-1, 0}, {0, -1}, {0, 1}
     };
 
@@ -20,7 +19,7 @@ public class EntityController {
                                     List<Rabbit> rabbits, List<Carrot> carrots) {
 
 
-        occupied = new boolean[gridSize][gridSize];
+        boolean[][] occupied = new boolean[gridSize][gridSize];
         Carrot carrot;
 
         // Marchewki
@@ -71,10 +70,26 @@ public class EntityController {
         }
     }
 
-    public static void step(List<Rabbit> rabbits, List<Carrot> carrots, int gridSize) {
+    public static void step(List<Rabbit> rabbits, List<Carrot> carrots, Carrot[][] carrotMap, int gridSize) {
         for (Rabbit r : rabbits) {
             r.move(carrots, gridSize);
+
+            int rx = r.getX();
+            int ry = r.getY();
+
+            // czy w tym miejscu na mapie leży marchewka
+            if (carrotMap[rx][ry] != null) {
+                Carrot eatenCarrot = carrotMap[rx][ry];
+
+                if(r.getEnergy()<200) {
+                    r.eat();
+                    carrotMap[rx][ry] = null;
+                    carrots.remove(eatenCarrot);
+                }
+            }
         }
+
+        // jak umarł to usuń
         rabbits.removeIf(r -> r.getEnergy() <= 0);
     }
 }
