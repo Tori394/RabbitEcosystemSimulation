@@ -81,9 +81,10 @@ public class EntityController {
             if (carrotMap[rx][ry] != null) {
                 Carrot eatenCarrot = carrotMap[rx][ry];
 
-                if(r.getEnergy()<200) {
+                if(eatenCarrot.getState() instanceof MatureState && r.getEnergy()<200) {
                     r.eat();
                     carrotMap[rx][ry] = null;
+                    spreadSeeds(eatenCarrot, carrots, carrotMap, gridSize);
                     carrots.remove(eatenCarrot);
                 }
             }
@@ -91,5 +92,29 @@ public class EntityController {
 
         // jak umarł to usuń
         rabbits.removeIf(r -> r.getEnergy() <= 0);
+    }
+
+    public static void spreadSeeds(Carrot eatenCarrot, List<Carrot> carrots, Carrot[][] carrotMap, int gridSize) {
+        int x = eatenCarrot.getX();
+        int y = eatenCarrot.getY();
+
+        for (int[] dir : directions) {
+            if (rn.nextInt(3) == 1) { // 1/3 szans na rozsianie
+
+                int newX = x + dir[0];
+                int newY = y + dir[1];
+
+                if (newX >= 0 && newX < gridSize && newY >= 0 && newY < gridSize) {
+
+                    if (carrotMap[newX][newY] == null) {
+
+                        Carrot c = new Carrot(newX, newY, eatenCarrot.getSize());
+                        carrots.add(c);
+
+                        carrotMap[newX][newY] = c;
+                    }
+                }
+            }
+        }
     }
 }

@@ -19,4 +19,8 @@ public class Carrot extends Entity {
     public void setColor(Color color) {
         this.color = color;
     }
+
+    public Object getState() {
+        return state;
+    }
 }
