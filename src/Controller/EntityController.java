@@ -9,26 +9,36 @@ import java.util.Random;
 
 public class EntityController {
     private static Random rn = new Random();
+    private static boolean[][] occupied;
 
-    public static List<Rabbit> initRabbits(int size, int tileSize, int gridSize) {
-        int x,y;
-        List<Rabbit> rabbits = new ArrayList<>();
-        for (int i=0; i<size; i++) {
-            x=rn.nextInt(gridSize);
-            y=rn.nextInt(gridSize);
-            rabbits.add(new Rabbit(x,y,tileSize));
-        }
-        return rabbits;
-    }
+    public static void initEntities(int rabbitCount, int carrotCount, int tileSize, int gridSize,
+                                    List<Rabbit> rabbits, List<Carrot> carrots) {
 
-    public static List<Carrot> initCarrots(int size, int tileSize, int gridSize) {
-        int x,y;
-        List<Carrot> carrots = new ArrayList<>();
-        for (int i=0; i<size; i++) {
-            x=rn.nextInt(gridSize);
-            y=rn.nextInt(gridSize);
-            carrots.add(new Carrot(x,y,tileSize));
+
+        occupied = new boolean[gridSize][gridSize];
+
+        // Króliki
+        for (int i = 0; i < rabbitCount; i++) {
+            int x, y;
+            do {
+                x = rn.nextInt(gridSize);
+                y = rn.nextInt(gridSize);
+            } while (occupied[x][y]);
+
+            occupied[x][y] = true;
+            rabbits.add(new Rabbit(x, y, tileSize));
         }
-        return carrots;
+
+        // Marchewki
+        for (int i = 0; i < carrotCount; i++) {
+            int x, y;
+            do {
+                x = rn.nextInt(gridSize);
+                y = rn.nextInt(gridSize);
+            } while (occupied[x][y]);
+
+            occupied[x][y] = true;
+            carrots.add(new Carrot(x, y, tileSize));
+        }
     }
 }
