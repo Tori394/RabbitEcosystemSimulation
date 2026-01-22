@@ -11,6 +11,11 @@ public class EntityController {
     private static Random rn = new Random();
     private static boolean[][] occupied;
 
+    private static int[][] directions = {
+            {1, 0}, {-1, 0}, {0, -1}, {0, 1}
+    };
+
+
     public static void initEntities(int rabbitCount, int carrotCount, int tileSize, int gridSize,
                                     List<Rabbit> rabbits, List<Carrot> carrots) {
 
@@ -32,33 +37,24 @@ public class EntityController {
             carrots.add(carrot);
 
             // zrób grządke
-            if (!occupied[x+1][y]) {
-                occupied[x+1][y] = true;
-                carrot = new Carrot(x+1, y, tileSize);
-                carrot.setState(new MatureState(carrot));
-                carrots.add(carrot);
-                i++;
-            }
-            if (!occupied[x-1][y] && i < carrotCount) {
-                occupied[x-1][y] = true;
-                carrot = new Carrot(x-1, y, tileSize);
-                carrot.setState(new MatureState(carrot));
-                carrots.add(carrot);
-                i++;
-            }
-            if (!occupied[x][y-1] && i < carrotCount) {
-                occupied[x][y-1] = true;
-                carrot = new Carrot(x, y-1, tileSize);
-                carrot.setState(new MatureState(carrot));
-                carrots.add(carrot);
-                i++;
-            }
-            if (!occupied[x][y+1] && i < carrotCount) {
-                occupied[x][y+1] = true;
-                carrot = new Carrot(x, y+1, tileSize);
-                carrot.setState(new MatureState(carrot));
-                carrots.add(carrot);
-                i++;
+            for (int[] dir : directions) {
+                if (i >= carrotCount) break;
+
+                int newX = x + dir[0];
+                int newY = y + dir[1];
+
+                if (newX >= 0 && newX < gridSize && newY >= 0 && newY < gridSize) {
+
+                    if (!occupied[newX][newY]) {
+                        occupied[newX][newY] = true;
+
+                        Carrot c = new Carrot(newX, newY, tileSize);
+                        c.setState(new MatureState(c));
+                        carrots.add(c);
+
+                        i++;
+                    }
+                }
             }
         }
 
@@ -73,5 +69,12 @@ public class EntityController {
             occupied[x][y] = true;
             rabbits.add(new Rabbit(x, y, tileSize));
         }
+    }
+
+    public static void step(List<Rabbit> rabbits, List<Carrot> carrots, int gridSize) {
+        for (Rabbit r : rabbits) {
+            r.move(carrots, gridSize);
+        }
+        rabbits.removeIf(r -> r.getEnergy() <= 0);
     }
 }

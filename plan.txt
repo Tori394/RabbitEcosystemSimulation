@@ -1,0 +1,7 @@
+Dzień	Wzorzec	Zastosowanie
+1	Singleton	GameSettings (dostęp do parametrów zewsząd).
+1/2	State	Cykl życia Marchewki (Seed -> Mature -> Rotten).
+2	Strategy	Ruch Królika (Random vs SeekFood).
+3	Factory	RabbitFactory do tworzenia młodych.
+3	Decorator	SickRabbit (efekt po zjedzeniu zgniłej marchewki).
+4	Observer	Aktualizacja liczników w UI bez spowalniania logiki.

@@ -6,6 +6,8 @@ import Model.Rabbit;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +27,8 @@ public class Simulator {
 
     private List<Rabbit> rabbits;
     private List<Carrot> carrots;
+
+    private Timer simulationTimer;
 
     public Simulator() {
         SpinnerNumberModel rabbitModel = new SpinnerNumberModel(100, 10, 1000, 1);
@@ -57,6 +61,16 @@ public class Simulator {
         frame.revalidate();
         frame.repaint();
         SimulationPanel.requestFocusInWindow();
+
+        simulationTimer = new Timer(500, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EntityController.step(rabbits, carrots, GRID_SIZE);
+                SimulationPanel.repaint();
+            }
+        });
+
+        simulationTimer.start();
     }
 
     public static void main(String[] args) {
