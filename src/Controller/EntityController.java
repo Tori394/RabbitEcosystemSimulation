@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.Carrot;
+import Model.MatureState;
 import Model.Rabbit;
 
 import java.util.ArrayList;
@@ -38,7 +39,9 @@ public class EntityController {
             } while (occupied[x][y]);
 
             occupied[x][y] = true;
-            carrots.add(new Carrot(x, y, tileSize));
+            Carrot carrot = new Carrot(x, y, tileSize);
+            carrot.setState(new MatureState(carrot));
+            carrots.add(carrot);
         }
     }
 }
