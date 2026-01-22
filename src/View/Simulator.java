@@ -1,23 +1,38 @@
 package View;
 
+import Controller.EntityController;
+import Model.Carrot;
+import Model.Rabbit;
+
 import javax.swing.*;
+import java.awt.*;
+import java.util.List;
 
 public class Simulator {
-    static int gridSize = 30;
-    private JPanel StartPanel;
-    private final JPanel SimulationPanel;
+    static final int WINDOW_SIZE = 600;
+    static int GRID_SIZE = 30;
+    static int TILE_SIZE;
 
-    public Simulator() {
-        SimulationPanel = new MapPanel(gridSize);
+    private JPanel StartPanel;
+    private JPanel SimulationPanel;
+    private List<Rabbit> rabbits;
+    private List<Carrot> carrots;
+
+    public Simulator(int rabbitsSize, int carrotsSize) {
+        TILE_SIZE = WINDOW_SIZE/GRID_SIZE;
+        rabbits = EntityController.initRabbits(rabbitsSize, TILE_SIZE, GRID_SIZE);
+        carrots = EntityController.initCarrots(carrotsSize, TILE_SIZE, GRID_SIZE);
+        SimulationPanel = new MapPanel(GRID_SIZE,TILE_SIZE, WINDOW_SIZE,rabbits,carrots);
     }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Tracking System");
-        frame.setContentPane(new Simulator().SimulationPanel);
+        JFrame frame = new JFrame("Ecosystem");
+        frame.setContentPane(new Simulator(10,10).SimulationPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setLocationRelativeTo(null);
-        frame.setSize(600,600);
+        frame.getContentPane().setPreferredSize(new Dimension(WINDOW_SIZE, WINDOW_SIZE));
+        frame.pack();
         frame.setResizable(false);
         frame.setVisible(true);
     }
