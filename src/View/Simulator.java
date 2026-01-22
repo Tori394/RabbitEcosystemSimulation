@@ -61,13 +61,13 @@ public class Simulator {
 
         JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(GameSettings);
         frame.setContentPane(SimulationPanel);
-        frame.getContentPane().setPreferredSize(new Dimension(WINDOW_SIZE, WINDOW_SIZE));
+        frame.getContentPane().setPreferredSize(new Dimension(WINDOW_SIZE+100, WINDOW_SIZE));
         frame.pack();
         frame.revalidate();
         frame.repaint();
         SimulationPanel.requestFocusInWindow();
 
-        simulationTimer = new Timer(500, new ActionListener() {
+        simulationTimer = new Timer(700, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 EntityController.step(rabbits, carrots, carrotMap, GRID_SIZE);

@@ -8,6 +8,11 @@ public class Rabbit extends Entity {
     private IRabbitMoveStrategy currentStrategy = null;
     private int energy;
 
+    // statystyki
+    private int age;
+    private int carrotsEaten;
+    private int kids;
+
     public Rabbit(int x, int y, int size) {
         this.x = x;
         this.y = y;
@@ -15,6 +20,9 @@ public class Rabbit extends Entity {
         this.size = size;
         this.energy = 100;
         this.currentStrategy = new RandomMoveStrategy();
+        this.age = 0;
+        this.carrotsEaten = 0;
+        this.kids = 0;
     }
 
     public void move(List<Carrot> carrots, int gridSize) {
@@ -27,6 +35,7 @@ public class Rabbit extends Entity {
 
         // Królik się męczy ruchem
         this.energy--;
+        this.age ++;
     }
 
     public void setStrategy(IRabbitMoveStrategy strategy) {
@@ -37,10 +46,19 @@ public class Rabbit extends Entity {
 
     public void eat() {
         this.energy += 30;
+        this.carrotsEaten ++;
     }
 
     public int getEnergy() {
         return energy;
+    }
+
+    public String getStats() {
+        return "Królik kliknięty" +
+                "\nZjedzonych marchewek: " + carrotsEaten +
+                "\nEnergia: " + energy + "/100" +
+                "\nWiek: " + age +
+                "\nDzieci: " + kids;
     }
 }
 
