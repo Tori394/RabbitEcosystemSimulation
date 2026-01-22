@@ -1,4 +1,5 @@
 package Model;
 
-public class EntityType {
+public enum EntityType {
+    RABBIT, CARROT
 }
