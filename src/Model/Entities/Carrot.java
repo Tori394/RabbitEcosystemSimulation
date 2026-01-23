@@ -1,4 +1,8 @@
-package Model;
+package Model.Entities;
+
+import Model.CarrotStates.GrowingState;
+import Model.CarrotStates.ICarrotState;
+import Model.CarrotStates.MatureState;
 
 import java.awt.*;
 
@@ -22,5 +26,9 @@ public class Carrot extends Entity {
 
     public Object getState() {
         return state;
+    }
+
+    public boolean isMature() {
+        return this.getState() instanceof MatureState;
     }
 }

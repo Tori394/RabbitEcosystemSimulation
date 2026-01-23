@@ -1,4 +1,7 @@
-package Model;
+package Model.RabbitMoveStrategies;
+
+import Model.Entities.Carrot;
+import Model.Entities.Rabbit;
 
 import java.awt.Point;
 import java.util.List;
@@ -8,7 +11,7 @@ public class RandomMoveStrategy implements IRabbitMoveStrategy {
     private Random rn = new Random();
 
     @Override
-    public Point calculateNextMove(Rabbit rabbit, List<Carrot> carrots, int gridSize) {
+    public Point calculateNextMove(Rabbit rabbit, List<Carrot> carrots, Carrot[][] carrotMap, int gridSize) {
         int currentX = rabbit.getX();
         int currentY = rabbit.getY();
 

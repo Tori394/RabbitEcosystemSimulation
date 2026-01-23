@@ -1,4 +1,6 @@
-package Model;
+package Model.CarrotStates;
+
+import Model.Entities.Carrot;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,7 +8,7 @@ import java.util.Random;
 
 public class GrowingState extends ICarrotState {
 
-    GrowingState(Carrot carrot) {
+    public GrowingState(Carrot carrot) {
         super(carrot);
         carrot.setColor(new Color(207, 174, 63));
         int delay = new Random().nextInt(10) + 20;

@@ -1,4 +1,6 @@
-package Model;
+package Model.CarrotStates;
+
+import Model.Entities.Carrot;
 
 public abstract class ICarrotState {
     protected Carrot carrot;

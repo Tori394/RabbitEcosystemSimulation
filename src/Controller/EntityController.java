@@ -1,9 +1,9 @@
 package Controller;
 
-import Model.Carrot;
-import Model.MatureState;
-import Model.Rabbit;
-import Model.EntityType;
+import Model.Entities.Carrot;
+import Model.CarrotStates.MatureState;
+import Model.Entities.Rabbit;
+import Model.Entities.EntityType;
 
 import java.util.List;
 import java.util.Random;
@@ -61,7 +61,7 @@ public class EntityController {
 
     public static void step(List<Rabbit> rabbits, List<Carrot> carrots, Carrot[][] carrotMap, int gridSize) {
         for (Rabbit r : rabbits) {
-            r.move(carrots, gridSize);
+            r.move(carrots, gridSize, carrotMap);
 
             int rx = r.getX();
             int ry = r.getY();
@@ -70,7 +70,7 @@ public class EntityController {
             if (carrotMap[rx][ry] != null) {
                 Carrot eatenCarrot = carrotMap[rx][ry];
 
-                if(eatenCarrot.getState() instanceof MatureState && r.getEnergy()<200) {
+                if(eatenCarrot.isMature() && r.getEnergy()<150) {
                     r.eat();
                     carrotMap[rx][ry] = null;
                     spreadSeeds(eatenCarrot, carrots, carrotMap, gridSize);
@@ -80,7 +80,8 @@ public class EntityController {
         }
 
         // jak umarł to usuń
-        rabbits.removeIf(r -> r.getEnergy() <= 0);
+        rabbits.removeIf(r -> r.getEnergy() <= 0); //z głodu
+        //rabbits.removeIf(r -> r.getEnergy() <= 0); //ze starości
     }
 
     private static void addCarrot(int x, int y, int tileSize, List<Carrot> list, boolean[][] occupied) {

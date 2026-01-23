@@ -1,4 +1,8 @@
-package Model;
+package Model.Entities;
+
+import Model.RabbitMoveStrategies.IRabbitMoveStrategy;
+import Model.RabbitMoveStrategies.RandomMoveStrategy;
+import Model.RabbitMoveStrategies.SeekFoodStrategy;
 
 import java.awt.Point;
 import java.awt.Color;
@@ -25,9 +29,14 @@ public class Rabbit extends Entity {
         this.kids = 0;
     }
 
-    public void move(List<Carrot> carrots, int gridSize) {
+    public void move(List<Carrot> carrots, int gridSize, Carrot[][] carrotMap) {
+        if (this.energy < 50){
+            this.setStrategy(new SeekFoodStrategy());
+        }else {
+            this.setStrategy(new RandomMoveStrategy());
+        }
 
-        Point nextStep = currentStrategy.calculateNextMove(this, carrots, gridSize);
+        Point nextStep = currentStrategy.calculateNextMove(this, carrots, carrotMap, gridSize);
 
         // Zaktualizuj pozycję
         this.x = nextStep.x;
@@ -53,12 +62,24 @@ public class Rabbit extends Entity {
         return energy;
     }
 
-    public String getStats() {
-        return "Królik kliknięty" +
-                "\nZjedzonych marchewek: " + carrotsEaten +
-                "\nEnergia: " + energy + "/100" +
-                "\nWiek: " + age +
-                "\nDzieci: " + kids;
+    public String[] getStats() {
+        String status;
+        if (this.energy < 0) {
+            status = "Królik zmarł";
+        }
+        else if (this.currentStrategy instanceof RandomMoveStrategy) {
+            status = "Królik żyje";
+        }
+        else {
+            status = "Królik głodny";
+        }
+        return new String[]{
+                status,
+                "Marchewki: " + carrotsEaten,
+                "Energia: " + energy + "/180",
+                "Wiek: " + age,
+                "Dzieci: " + kids
+        };
     }
 }
 

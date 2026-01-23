@@ -1,7 +1,7 @@
 package View;
 
-import Model.Carrot;
-import Model.Rabbit;
+import Model.Entities.Carrot;
+import Model.Entities.Rabbit;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,20 +38,15 @@ class MapPanel extends JPanel {
         int gridX = mouseX / tileSize;
         int gridY = mouseY / tileSize;
 
-        Rabbit foundRabbit = null;
-
         for (Rabbit r : rabbits) {
             if (r.getX() == gridX && r.getY() == gridY) {
                 selectedRabbit = r;
-                foundRabbit = r;
-                break;
+                repaint();
+                return;
             }
         }
 
-        if (foundRabbit != null) {
-            JOptionPane.showMessageDialog(this, foundRabbit.getStats(), "Statystyki Królika", JOptionPane.INFORMATION_MESSAGE);
-        }
-
+        selectedRabbit = null;
         repaint();
     }
 
@@ -90,6 +85,17 @@ class MapPanel extends JPanel {
                 g2.drawOval(r.getX() * tileSize, r.getY() * tileSize, tileSize, tileSize);
 
                 g2.setStroke(oldStroke);
+            }
+        }
+
+        // statystyki zaznaczonego
+        if (selectedRabbit!=null) {
+            int y = windowSize/2;
+            String[] lines = selectedRabbit.getStats();
+            g.setColor(Color.black);
+            for (String line : lines) {
+                g.drawString(line, windowSize+5, y);
+                y += 15;
             }
         }
     }

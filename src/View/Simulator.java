@@ -1,8 +1,8 @@
 package View;
 
 import Controller.EntityController;
-import Model.Carrot;
-import Model.Rabbit;
+import Model.Entities.Carrot;
+import Model.Entities.Rabbit;
 
 import javax.swing.*;
 import java.awt.*;

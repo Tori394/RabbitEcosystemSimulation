@@ -1,4 +1,6 @@
-package Model;
+package Model.CarrotStates;
+
+import Model.Entities.Carrot;
 
 import java.awt.*;
 
