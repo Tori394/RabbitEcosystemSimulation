@@ -1,5 +1,6 @@
 package Controller;
 
+import Model.CarrotStates.DeadState;
 import Model.Entities.Carrot;
 import Model.CarrotStates.MatureState;
 import Model.Entities.Rabbit;
@@ -82,6 +83,9 @@ public class EntityController {
         // jak umarł to usuń
         rabbits.removeIf(r -> r.getEnergy() <= 0); //z głodu
         //rabbits.removeIf(r -> r.getEnergy() <= 0); //ze starości
+
+        //jak marchewka zgniła to usuń
+        carrots.removeIf(c -> c.getState() instanceof DeadState);
     }
 
     private static void addCarrot(int x, int y, int tileSize, List<Carrot> list, boolean[][] occupied) {

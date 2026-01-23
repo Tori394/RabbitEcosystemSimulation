@@ -6,14 +6,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
 
-public class MatureState extends CarrotState {
-    
-    public MatureState(Carrot carrot) {
+public class RottenState extends CarrotState {
+    public RottenState(Carrot carrot) {
         super(carrot);
-        carrot.setColor(new Color(255, 115, 0));
-        int delay = new Random().nextInt(20) + 40;
+        carrot.setColor(new Color(80, 72, 33));
+        int delay = new Random().nextInt(10) + 5;
         Timer timer = new Timer(delay*1000, e -> {
-            carrot.setState(new RottenState(carrot));
+            carrot.setState(new DeadState(carrot));
         });
         timer.setRepeats(false);
         timer.start();
@@ -21,6 +20,8 @@ public class MatureState extends CarrotState {
 
     @Override
     public CarrotState copy(Carrot newOwner) {
-        return new MatureState(newOwner);
+        return new RottenState(newOwner);
     }
 }
+
+

@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
 
-public class GrowingState extends ICarrotState {
+public class GrowingState extends CarrotState {
 
     public GrowingState(Carrot carrot) {
         super(carrot);
@@ -20,7 +20,7 @@ public class GrowingState extends ICarrotState {
     }
 
     @Override
-    public ICarrotState copy(Carrot newOwner) {
+    public CarrotState copy(Carrot newOwner) {
         return new GrowingState(newOwner);
     }
 }
