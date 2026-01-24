@@ -37,6 +37,7 @@ public class Simulator {
     private JTextArea rabbitStatsArea;
 
     private Timer simulationTimer;
+    private long startTime;
 
     public Simulator() {
         SpinnerNumberModel rabbitModel = new SpinnerNumberModel(100, 10, 1000, 1);
@@ -129,11 +130,41 @@ public class Simulator {
         frame.repaint();
         mapPanel.requestFocusInWindow();
 
+        startTime = System.currentTimeMillis();
+
         simulationTimer = new Timer(700, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                EntityController.step(rabbits, carrots, carrotMap, rabbitMates, GRID_SIZE);
-                mapPanel.repaint();
+                if (!rabbits.isEmpty()) {
+                    EntityController.step(rabbits, carrots, carrotMap, rabbitMates, GRID_SIZE);
+                    mapPanel.repaint();
+                }
+                else {
+                    simulationTimer.stop();
+
+                    long now = System.currentTimeMillis();
+                    long elapsedMillis = now - startTime;
+                    long seconds = (elapsedMillis / 1000) % 60;
+                    long minutes = (elapsedMillis / (1000 * 60)) % 60;
+                    String timeText = String.format("%02d:%02d", minutes, seconds);
+
+                    Object[] options = {"Close Program"};
+
+                    int n = JOptionPane.showOptionDialog(mapPanel,
+                            "Ecosystem collapsed.\n" +
+                                    "Rabbits survived for " + maxGenLabel.getText().split(" ")[2] + " generation(s)\n" +
+                                    "Total Simulation Time: " + timeText, // Tutaj dodajemy czas
+                            "Game Over",
+                            JOptionPane.DEFAULT_OPTION,
+                            JOptionPane.INFORMATION_MESSAGE,
+                            null,
+                            options,
+                            options[0]);
+
+                    if (n == 0) {
+                        System.exit(0);
+                    }
+                }
             }
         });
 
