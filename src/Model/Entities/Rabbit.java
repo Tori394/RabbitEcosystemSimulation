@@ -53,8 +53,8 @@ public class Rabbit extends Entity {
         }
     }
 
-    public void eat() {
-        this.energy += 30;
+    public void eat(int energy) {
+        this.energy += energy;
         this.carrotsEaten ++;
     }
 
@@ -62,24 +62,18 @@ public class Rabbit extends Entity {
         return energy;
     }
 
-    public String[] getStats() {
+    public String getStats() {
         String status;
         if (this.energy < 0) {
-            status = "Królik zmarł";
+            status = "Dead";
         }
         else if (this.currentStrategy instanceof RandomMoveStrategy) {
-            status = "Królik żyje";
+            status = "Alive";
         }
         else {
-            status = "Królik głodny";
+            status = "Hungry";
         }
-        return new String[]{
-                status,
-                "Marchewki: " + carrotsEaten,
-                "Energia: " + energy + "/180",
-                "Wiek: " + age,
-                "Dzieci: " + kids
-        };
+        return status + "\nTimes eaten: " + carrotsEaten + "\nEnergy: " + energy + "/180 \nAge: " + age + "\nKids: " + kids;
     }
 }
 

@@ -105,13 +105,7 @@ class MapPanel extends JPanel {
 
     public void updateRabbitUI() {
         if (selectedRabbit != null) {
-                String[] lines = selectedRabbit.getStats();
-
-                StringBuilder sb = new StringBuilder();
-                for (String line : lines) {
-                    sb.append(line).append("\n");
-                }
-                rabbitStatsArea.setText(sb.toString());
+                rabbitStatsArea.setText(selectedRabbit.getStats());
         }
     }
 }

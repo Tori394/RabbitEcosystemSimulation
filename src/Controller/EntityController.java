@@ -88,7 +88,7 @@ public class EntityController {
                 Carrot eatenCarrot = carrotMap[rx][ry];
 
                 if(eatenCarrot.isMature() && r.getEnergy()<150) {
-                    r.eat();
+                    r.eat(eatenCarrot.getEnergy());
                     carrotMap[rx][ry] = null;
                     spreadSeeds(eatenCarrot, carrots, carrotMap, gridSize);
                     carrots.remove(eatenCarrot);

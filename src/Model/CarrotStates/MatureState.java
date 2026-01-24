@@ -10,6 +10,7 @@ public class MatureState extends CarrotState {
     
     public MatureState(Carrot carrot) {
         super(carrot);
+        carrot.setEnergy(30);
         carrot.setColor(new Color(255, 115, 0));
         int delay = new Random().nextInt(20) + 40;
         Timer timer = new Timer(delay*1000, e -> {

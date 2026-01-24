@@ -3,11 +3,13 @@ package Model.Entities;
 import Model.CarrotStates.GrowingState;
 import Model.CarrotStates.CarrotState;
 import Model.CarrotStates.MatureState;
+import Model.CarrotStates.RottenState;
 
 import java.awt.*;
 
 public class Carrot extends Entity {
     private CarrotState state;
+    private int energy;
 
     public Carrot(int x, int y, int size) {
         this.x = x;
@@ -29,6 +31,14 @@ public class Carrot extends Entity {
     }
 
     public boolean isMature() {
-        return this.getState() instanceof MatureState;
+        return (this.getState() instanceof MatureState || this.getState() instanceof RottenState);
+    }
+
+    public void setEnergy(int energy) {
+        this.energy = energy;
+    }
+
+    public int getEnergy() {
+        return energy;
     }
 }
