@@ -7,6 +7,6 @@ import java.awt.Point;
 import java.util.List;
 
 public interface IRabbitMoveStrategy {
-    Point calculateNextMove(Rabbit rabbit, List<Carrot> carrots, Carrot[][] carrotMap, int gridSize);
+    Point calculateNextMove(Rabbit rabbit, List<Carrot> carrots, Carrot[][] carrotMap, Rabbit[][] rabbitMates, int gridSize);
 }
 

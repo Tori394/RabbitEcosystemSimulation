@@ -85,12 +85,23 @@ class MapPanel extends JPanel {
             g.setColor(r.getColor());
             g.fillOval(r.getX() * tileSize, r.getY() * tileSize, r.getSize(), r.getSize());
 
+            if (r.isReadyToMate()) {
+                Graphics2D g2 = (Graphics2D) g;
+                Stroke oldStroke = g2.getStroke();
+                g2.setStroke(new BasicStroke(3));
+
+                g2.setColor(Color.red); // Kolor zaznaczenia
+                g2.drawOval(r.getX() * tileSize, r.getY() * tileSize, tileSize, tileSize);
+
+                g2.setStroke(oldStroke);
+            }
+
             if (r == selectedRabbit) {
                 Graphics2D g2 = (Graphics2D) g;
                 Stroke oldStroke = g2.getStroke();
                 g2.setStroke(new BasicStroke(3));
 
-                g2.setColor(Color.RED); // Kolor zaznaczenia
+                g2.setColor(Color.blue); // Kolor zaznaczenia
                 g2.drawOval(r.getX() * tileSize, r.getY() * tileSize, tileSize, tileSize);
 
                 g2.setStroke(oldStroke);

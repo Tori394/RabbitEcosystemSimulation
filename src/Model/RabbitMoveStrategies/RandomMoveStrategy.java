@@ -11,7 +11,7 @@ public class RandomMoveStrategy implements IRabbitMoveStrategy {
     private Random rn = new Random();
 
     @Override
-    public Point calculateNextMove(Rabbit rabbit, List<Carrot> carrots, Carrot[][] carrotMap, int gridSize) {
+    public Point calculateNextMove(Rabbit rabbit, List<Carrot> carrots, Carrot[][] carrotMap, Rabbit[][] rabbitMates, int gridSize) {
         int currentX = rabbit.getX();
         int currentY = rabbit.getY();
 

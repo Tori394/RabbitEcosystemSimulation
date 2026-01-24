@@ -8,6 +8,7 @@ import Model.Entities.EntityType;
 import Model.RabbitStates.DeadState;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -74,17 +75,20 @@ public class EntityController {
         }
     }
 
-    public static void step(List<Rabbit> rabbits, List<Carrot> carrots, Carrot[][] carrotMap, int gridSize) {
+    public static void step(List<Rabbit> rabbits, List<Carrot> carrots, Carrot[][] carrotMap, Rabbit[][] rabbitMates, int gridSize) {
         int rabbitsBefore = rabbits.size();
         int carrotsBefore = carrots.size();
 
+        Rabbit[][] collisionMap = new Rabbit[gridSize][gridSize];
+        List<Rabbit> babies = new ArrayList<>();
+
         for (Rabbit r : rabbits) {
-            r.move(carrots, gridSize, carrotMap);
+            r.move(carrots, gridSize, carrotMap, rabbitMates);
 
             int rx = r.getX();
             int ry = r.getY();
 
-            // czy w tym miejscu na mapie leży marchewka
+            // JEDZENIE
             if (carrotMap[rx][ry] != null) {
                 Carrot eatenCarrot = carrotMap[rx][ry];
 
@@ -95,7 +99,46 @@ public class EntityController {
                     carrots.remove(eatenCarrot);
                 }
             }
+
+            // ROZMNAŻANIE
+            if (r.isReadyToMate()) {
+                // Czy ktoś tu jest
+                Rabbit partner = collisionMap[rx][ry];
+
+                if (partner != null) {
+                    // JEST PARTNER
+                    // Tworzymy dziecko
+                    int babiesAmount = rn.nextInt(3)+2;
+                    for (int i = 0; i < babiesAmount; i++) {
+                        Rabbit baby = (Rabbit) EntityFactory.createEntity(EntityType.RABBIT, rx, ry, r.getSize());
+                        babies.add(baby);
+                    }
+
+                    r.Breed(babiesAmount);
+                    partner.Breed(babiesAmount);
+
+                    collisionMap[rx][ry] = null;
+
+                } else {
+                    // PUSTO
+                    collisionMap[rx][ry] = r;
+                }
+            }
+
         }
+
+        // update królików szukających partnera
+        for (Rabbit[] row : rabbitMates) {
+            Arrays.fill(row, null);
+        }
+
+        for (Rabbit r : rabbits) {
+            if (r.isReadyToMate() && !r.isBusy()) {
+                rabbitMates[r.getX()][r.getY()] = r;
+            }
+        }
+
+        rabbits.addAll(babies);
 
         // jak umarł to usuń
         rabbits.removeIf(r -> r.getEnergy() <= 0); //z głodu

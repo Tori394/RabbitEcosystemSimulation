@@ -5,13 +5,12 @@ import Model.Entities.Rabbit;
 
 import java.awt.*;
 import java.util.List;
-
 import java.util.Random;
 
-public class SeekFoodStrategy implements IRabbitMoveStrategy {
+public class SeekMateStrategy implements IRabbitMoveStrategy {
     private final Random rn = new Random();
 
-    private Point findCarrot(int x, int y, Carrot[][] carrotMap, int gridSize) {
+    private Point findMate(int x, int y, Rabbit[][] rabbitMates, int gridSize) {
         int[][] visionField = {
                 // --- KRĄG 1 (Najbliższe) ---
                 {0, -1}, {0, 1}, {-1, 0}, {1, 0},           // Góra, Dół, Lewo, Prawo
@@ -51,24 +50,13 @@ public class SeekFoodStrategy implements IRabbitMoveStrategy {
                 {-4, -5}, {4, -5}, {-5, -4}, {5, -4},       // Najszersze brzegi koła
                 {-4, 5}, {4, 5}, {-5, 4}, {5, 4}
         };
-        //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        //          [ ] [ ] [ ]  * [ ] [ ] [ ]
-        //          [ ] [ ]  *   *   * [ ] [ ]
-        //          [ ]  *   *   *   *   * [ ]
-        //           *   *   *   O   *   *  *
-        //          [ ]  *   *   *   *   * [ ]
-        //          [ ] [ ]  *   *   * [ ] [ ]
-        //          [ ] [ ] [ ]  * [ ] [ ] [ ]
-
 
         for (int[] offset : visionField) {
             int targetX = x + offset[0];
             int targetY = y + offset[1];
             if (targetX >= 0 && targetX < gridSize && targetY >= 0 && targetY < gridSize) {
-                if (carrotMap[targetX][targetY] != null) {
-                    if (carrotMap[targetX][targetY].isMature()) {
-                        return new Point(targetX, targetY);
-                    }
+                if (rabbitMates[targetX][targetY] != null) {
+                    return new Point(targetX, targetY);
                 }
             }
         }
@@ -77,6 +65,18 @@ public class SeekFoodStrategy implements IRabbitMoveStrategy {
     }
 
     private Point getDirection(int x, int y, Point target) {
+        // TIE-BREAKER: Jeśli sąsiedzi, jeden musi stać, a drugi iść
+        int dist = Math.max(Math.abs(target.x - x), Math.abs(target.y - y));
+
+        if (dist == 1) {
+            // Zasada pierwszeństwa: Rusza się ten z większymi współrzędnymi
+            boolean amITheMover = (x > target.x) || (x == target.x && y > target.y);
+
+            if (!amITheMover) {
+                return new Point(x, y); // Czekam, aż partner wejdzie na mnie
+            }
+        }
+
         int newX, newY;
 
         newX = (target.x - x);
@@ -96,7 +96,7 @@ public class SeekFoodStrategy implements IRabbitMoveStrategy {
     public Point calculateNextMove(Rabbit rabbit, List<Carrot> carrots, Carrot[][] carrotMap, Rabbit[][] rabbitMates, int gridSize) {
         int x = rabbit.getX();
         int y = rabbit.getY();
-        Point target = findCarrot(x, y, carrotMap, gridSize);
+        Point target = findMate(x, y, rabbitMates, gridSize);
         if (target!=null) {
             return getDirection(x, y, target);
         }

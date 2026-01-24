@@ -1,21 +1,22 @@
 package Model.Entities;
 
-import Model.CarrotStates.CarrotState;
-import Model.CarrotStates.GrowingState;
 import Model.RabbitMoveStrategies.IRabbitMoveStrategy;
 import Model.RabbitMoveStrategies.RandomMoveStrategy;
 import Model.RabbitMoveStrategies.SeekFoodStrategy;
+import Model.RabbitMoveStrategies.SeekMateStrategy;
+import Model.RabbitStates.AdultState;
+import Model.RabbitStates.DeadState;
 import Model.RabbitStates.KidState;
 import Model.RabbitStates.RabbitState;
 
-import java.awt.Point;
-import java.awt.Color;
+import java.awt.*;
 import java.util.List;
 
 public class Rabbit extends Entity {
     private IRabbitMoveStrategy currentStrategy = null;
     private int energy;
     private RabbitState state;
+    private Rabbit partner;
 
     // statystyki
     private int age;
@@ -27,6 +28,7 @@ public class Rabbit extends Entity {
         this.y = y;
         this.size = size;
         this.energy = 100;
+        this.partner = null;
 
         this.currentStrategy = new RandomMoveStrategy();
         setState(new KidState(this));
@@ -36,14 +38,16 @@ public class Rabbit extends Entity {
         this.kids = 0;
     }
 
-    public void move(List<Carrot> carrots, int gridSize, Carrot[][] carrotMap) {
+    public void move(List<Carrot> carrots, int gridSize, Carrot[][] carrotMap, Rabbit[][] rabbitMates) {
         if (this.energy < 50){
             this.setStrategy(new SeekFoodStrategy());
-        }else {
+        } else if (this.isReadyToMate()) {
+            this.setStrategy(new SeekMateStrategy());
+        } else {
             this.setStrategy(new RandomMoveStrategy());
         }
 
-        Point nextStep = currentStrategy.calculateNextMove(this, carrots, carrotMap, gridSize);
+        Point nextStep = currentStrategy.calculateNextMove(this, carrots, carrotMap, rabbitMates, gridSize);
 
         // Zaktualizuj pozycję
         this.x = nextStep.x;
@@ -71,11 +75,14 @@ public class Rabbit extends Entity {
 
     public String getStats() {
         String status;
-        if (this.energy <= 0) {
-            status = "Dead";dd
+        if (this.energy <= 0 || state instanceof DeadState) {
+            status = "Dead";
         }
         else if (this.currentStrategy instanceof RandomMoveStrategy) {
             status = "Alive";
+        }
+        else if (this.currentStrategy instanceof SeekMateStrategy) {
+            status = "Looking for love";
         }
         else {
             status = "Hungry";
@@ -93,6 +100,19 @@ public class Rabbit extends Entity {
 
     public void setColor(Color color){
         this.color = color;
+    }
+
+    public boolean isReadyToMate() {
+        return (this.energy>=150 && state instanceof AdultState);
+    }
+
+    public boolean isBusy() {
+        return partner != null;
+    }
+
+    public void Breed(int babiesAmount) {
+        this.kids += babiesAmount;
+        this.energy -= 50;
     }
 }
 

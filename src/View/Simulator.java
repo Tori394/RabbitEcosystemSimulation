@@ -29,6 +29,7 @@ public class Simulator {
     private List<Rabbit> rabbits;
     private List<Carrot> carrots;
     private Carrot[][] carrotMap;
+    private Rabbit[][] rabbitMates;
 
     private JLabel rabbitCountLabel;
     private JLabel carrotCountLabel;
@@ -66,6 +67,7 @@ public class Simulator {
 
         EntityController.initEntities(rabbitsCount, carrotsCount, TILE_SIZE, GRID_SIZE, rabbits, carrots);
         carrotMap = new Carrot[GRID_SIZE][GRID_SIZE];
+        rabbitMates = new Rabbit[GRID_SIZE][GRID_SIZE];
         for (Carrot c : carrots) {
             carrotMap[c.getX()][c.getY()] = c;
         }
@@ -123,7 +125,7 @@ public class Simulator {
         simulationTimer = new Timer(700, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                EntityController.step(rabbits, carrots, carrotMap, GRID_SIZE);
+                EntityController.step(rabbits, carrots, carrotMap, rabbitMates, GRID_SIZE);
                 mapPanel.repaint();
             }
         });
