@@ -22,8 +22,9 @@ public class Rabbit extends Entity {
     private int age;
     private int carrotsEaten;
     private int kids;
+    private final int generation;
 
-    public Rabbit(int x, int y, int size) {
+    public Rabbit(int x, int y, int size, int gen) {
         this.x = x;
         this.y = y;
         this.size = size;
@@ -36,6 +37,7 @@ public class Rabbit extends Entity {
         this.age = 0;
         this.carrotsEaten = 0;
         this.kids = 0;
+        this.generation = gen+1;
     }
 
     public void move(List<Carrot> carrots, int gridSize, Carrot[][] carrotMap, Rabbit[][] rabbitMates) {
@@ -87,7 +89,11 @@ public class Rabbit extends Entity {
         else {
             status = "Hungry";
         }
-        return status + "\nTimes eaten: " + carrotsEaten + "\nEnergy: " + energy + "/180 \nAge: " + age + "\nKids: " + kids;
+        return status + "\nTimes eaten: " + carrotsEaten +
+                "\nEnergy: " + energy +
+                "/180 \nAge: " + age +
+                "\nKids: " + kids +
+                "\nGeneration: " + generation;
     }
 
     public Object getState() {
@@ -113,6 +119,10 @@ public class Rabbit extends Entity {
     public void Breed(int babiesAmount) {
         this.kids += babiesAmount;
         this.energy -= 50;
+    }
+
+    public int getGeneration() {
+        return generation;
     }
 }
 

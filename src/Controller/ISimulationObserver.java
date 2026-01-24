@@ -1,5 +1,5 @@
 package Controller;
 
 public interface ISimulationObserver {
-    void onStatsChanged(int rabbitCount, int carrotCount);
+    void onStatsChanged(int rabbitCount, int carrotCount, int maxGen);
 }

@@ -14,6 +14,7 @@ import java.util.Random;
 
 public class EntityController {
     private static Random rn = new Random();
+    private static int maxGen;
 
     private static List<ISimulationObserver> observers = new ArrayList<>();
 
@@ -22,9 +23,9 @@ public class EntityController {
     }
 
 
-    private static void notifyObservers(int rCount, int cCount) {
+    private static void notifyObservers(int rCount, int cCount, int maxGen) {
         for (ISimulationObserver observer : observers) {
-            observer.onStatsChanged(rCount, cCount);
+            observer.onStatsChanged(rCount, cCount, maxGen);
         }
     }
 
@@ -70,14 +71,17 @@ public class EntityController {
                 y = rn.nextInt(gridSize);
             } while (occupied[x][y]);
 
-            Rabbit r = (Rabbit) EntityFactory.createEntity(EntityType.RABBIT, x, y, tileSize);
+            Rabbit r = (Rabbit) EntityFactory.createEntity(EntityType.RABBIT, x, y, tileSize, 0);
             rabbits.add(r);
         }
+
+        maxGen = 1;
     }
 
     public static void step(List<Rabbit> rabbits, List<Carrot> carrots, Carrot[][] carrotMap, Rabbit[][] rabbitMates, int gridSize) {
         int rabbitsBefore = rabbits.size();
         int carrotsBefore = carrots.size();
+        int genBefore = maxGen;
 
         Rabbit[][] collisionMap = new Rabbit[gridSize][gridSize];
         List<Rabbit> babies = new ArrayList<>();
@@ -110,8 +114,10 @@ public class EntityController {
                     // Tworzymy dziecko
                     int babiesAmount = rn.nextInt(3)+2;
                     for (int i = 0; i < babiesAmount; i++) {
-                        Rabbit baby = (Rabbit) EntityFactory.createEntity(EntityType.RABBIT, rx, ry, r.getSize());
+                        Rabbit baby = (Rabbit) EntityFactory.createEntity(EntityType.RABBIT, rx, ry, r.getSize(), getGen(r, partner));
                         babies.add(baby);
+                        maxGen = Math.max(baby.getGeneration(), maxGen);
+
                     }
 
                     r.Breed(babiesAmount);
@@ -150,14 +156,18 @@ public class EntityController {
         int rabbitsAfter = rabbits.size();
         int carrotsAfter = carrots.size();
 
-        if (rabbitsAfter != rabbitsBefore || carrotsAfter != carrotsBefore) {
-            notifyObservers(rabbitsAfter, carrotsAfter);
+        if (rabbitsAfter != rabbitsBefore || carrotsAfter != carrotsBefore || maxGen != genBefore) {
+            notifyObservers(rabbitsAfter, carrotsAfter, maxGen);
         }
+    }
+
+    private static int getGen(Rabbit r, Rabbit partner) {
+        return Math.max(r.getGeneration(), partner.getGeneration());
     }
 
     private static void addCarrot(int x, int y, int tileSize, List<Carrot> list, boolean[][] occupied) {
         occupied[x][y] = true;
-        Carrot c = (Carrot) EntityFactory.createEntity(EntityType.CARROT, x, y, tileSize);
+        Carrot c = (Carrot) EntityFactory.createEntity(EntityType.CARROT, x, y, tileSize, 0);
         c.setState(new MatureState(c));
         list.add(c);
     }
@@ -180,7 +190,7 @@ public class EntityController {
 
                     if (carrotMap[newX][newY] == null) {
 
-                        Carrot c = (Carrot) EntityFactory.createEntity(EntityType.CARROT, newX, newY, eatenCarrot.getSize());
+                        Carrot c = (Carrot) EntityFactory.createEntity(EntityType.CARROT, newX, newY, eatenCarrot.getSize(), 0);
 
                         carrots.add(c);
                         carrotMap[newX][newY] = c;

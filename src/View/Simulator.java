@@ -33,6 +33,7 @@ public class Simulator {
 
     private JLabel rabbitCountLabel;
     private JLabel carrotCountLabel;
+    private JLabel maxGenLabel;
     private JTextArea rabbitStatsArea;
 
     private Timer simulationTimer;
@@ -44,8 +45,9 @@ public class Simulator {
         SpinnerNumberModel carrotModel = new SpinnerNumberModel(100, 10, 1000, 1);
         carrotSpinner.setModel(carrotModel);
 
-        rabbitCountLabel = new JLabel("Rabbits: 0");
-        carrotCountLabel = new JLabel("Carrots: 0");
+        rabbitCountLabel = new JLabel();
+        carrotCountLabel = new JLabel();
+        maxGenLabel = new JLabel();
 
         rabbitStatsArea = new JTextArea(10, 15);
         rabbitStatsArea.setEditable(false);
@@ -89,13 +91,18 @@ public class Simulator {
         carrotCountLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         sidePanel.add(carrotCountLabel);
 
-        EntityController.addObserver((rCount, cCount) -> {
+        maxGenLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        sidePanel.add(maxGenLabel);
+
+        EntityController.addObserver((rCount, cCount, maxGen) -> {
             rabbitCountLabel.setText("Rabbits: " + rCount);
             carrotCountLabel.setText("Carrots: " + cCount);
+            maxGenLabel.setText("Max generation: " + maxGen);
         });
 
         rabbitCountLabel.setText("Rabbits: " + rabbits.size());
         carrotCountLabel.setText("Carrots: " + carrots.size());
+        maxGenLabel.setText("Max generation: " + 1);
 
         sidePanel.add(Box.createVerticalStrut(20));
 
