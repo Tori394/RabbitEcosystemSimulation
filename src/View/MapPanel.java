@@ -17,14 +17,23 @@ class MapPanel extends JPanel {
     private final List<Rabbit> rabbits;
     private final List<Carrot> carrots;
 
+    private JLabel rabbitCountLabel;
+    private JLabel carrotCountLabel;
+    private JTextArea rabbitStatsArea;
+
     private Rabbit selectedRabbit = null;
 
-    public MapPanel(int gridSize, int tileSize, int windowSize, List<Rabbit> rabbits, List<Carrot> carrots) {
+    public MapPanel(int gridSize, int tileSize, int windowSize, List<Rabbit> rabbits, List<Carrot> carrots,
+                                                    JLabel rLabel, JLabel cLabel, JTextArea sArea) {
         this.gridSize = gridSize;
         this.tileSize = tileSize;
         this.windowSize = windowSize;
         this.rabbits = rabbits;
         this.carrots = carrots;
+
+        this.rabbitCountLabel = rLabel;
+        this.carrotCountLabel = cLabel;
+        this.rabbitStatsArea = sArea;
 
         this.addMouseListener(new MouseAdapter() {
             @Override
@@ -87,16 +96,22 @@ class MapPanel extends JPanel {
                 g2.setStroke(oldStroke);
             }
         }
+        // statystyki
+        if (selectedRabbit != null) {
+            updateRabbitUI();
+        }
+        else rabbitStatsArea.setText("");
+    }
 
-        // statystyki zaznaczonego
-        if (selectedRabbit!=null) {
-            int y = windowSize/2;
-            String[] lines = selectedRabbit.getStats();
-            g.setColor(Color.black);
-            for (String line : lines) {
-                g.drawString(line, windowSize+5, y);
-                y += 15;
-            }
+    public void updateRabbitUI() {
+        if (selectedRabbit != null) {
+                String[] lines = selectedRabbit.getStats();
+
+                StringBuilder sb = new StringBuilder();
+                for (String line : lines) {
+                    sb.append(line).append("\n");
+                }
+                rabbitStatsArea.setText(sb.toString());
         }
     }
 }

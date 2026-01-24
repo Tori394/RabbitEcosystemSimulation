@@ -16,8 +16,9 @@ public class Simulator {
     static int GRID_SIZE = 50;
     static int TILE_SIZE;
 
-    private JPanel GameSettings;      // Panel ustawień
-    private JPanel SimulationPanel;   // Panel mapy
+    private JPanel GameSettings;
+    private MapPanel mapPanel;
+
     private JSpinner rabbitSpinner;
     private JSpinner carrotSpinner;
     private JButton startButton;
@@ -29,6 +30,10 @@ public class Simulator {
     private List<Carrot> carrots;
     private Carrot[][] carrotMap;
 
+    private JLabel rabbitCountLabel;
+    private JLabel carrotCountLabel;
+    private JTextArea rabbitStatsArea;
+
     private Timer simulationTimer;
 
     public Simulator() {
@@ -37,6 +42,14 @@ public class Simulator {
 
         SpinnerNumberModel carrotModel = new SpinnerNumberModel(100, 10, 1000, 1);
         carrotSpinner.setModel(carrotModel);
+
+        rabbitCountLabel = new JLabel("Rabbits: 0");
+        carrotCountLabel = new JLabel("Carrots: 0");
+
+        rabbitStatsArea = new JTextArea(10, 15);
+        rabbitStatsArea.setEditable(false);
+        rabbitStatsArea.setLineWrap(true);
+        rabbitStatsArea.setOpaque(false);
 
         startButton.addActionListener(e -> {
             startSimulation();
@@ -57,21 +70,61 @@ public class Simulator {
             carrotMap[c.getX()][c.getY()] = c;
         }
 
-        SimulationPanel = new MapPanel(GRID_SIZE, TILE_SIZE, WINDOW_SIZE, rabbits, carrots);
+        JPanel sidePanel = new JPanel();
+        sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.Y_AXIS));
+        sidePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        sidePanel.setPreferredSize(new Dimension(150, WINDOW_SIZE));
+
+        JLabel headerLabel = new JLabel("STATS:");
+        headerLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        sidePanel.add(headerLabel);
+
+        sidePanel.add(Box.createVerticalStrut(8));
+
+        rabbitCountLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        sidePanel.add(rabbitCountLabel);
+
+        carrotCountLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        sidePanel.add(carrotCountLabel);
+
+        EntityController.addObserver((rCount, cCount) -> {
+            rabbitCountLabel.setText("Rabbits: " + rCount);
+            carrotCountLabel.setText("Carrots: " + cCount);
+        });
+
+        rabbitCountLabel.setText("Rabbits: " + rabbits.size());
+        carrotCountLabel.setText("Carrots: " + carrots.size());
+
+        sidePanel.add(Box.createVerticalStrut(20));
+
+        JLabel infoLabel = new JLabel("Rabbit INFO:");
+        infoLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        sidePanel.add(infoLabel);
+
+        rabbitStatsArea.setAlignmentX(Component.LEFT_ALIGNMENT);
+        sidePanel.add(rabbitStatsArea);
+
+        mapPanel = new MapPanel(GRID_SIZE, TILE_SIZE, WINDOW_SIZE, rabbits, carrots,
+                rabbitCountLabel, carrotCountLabel, rabbitStatsArea);
+
+        JPanel mainContainer = new JPanel(new BorderLayout());
+        mainContainer.add(mapPanel, BorderLayout.CENTER);
+        mainContainer.add(sidePanel, BorderLayout.EAST);
 
         JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(GameSettings);
-        frame.setContentPane(SimulationPanel);
-        frame.getContentPane().setPreferredSize(new Dimension(WINDOW_SIZE+100, WINDOW_SIZE));
+        frame.setContentPane(mainContainer);
+
+        frame.getContentPane().setPreferredSize(new Dimension(WINDOW_SIZE + 150, WINDOW_SIZE));
         frame.pack();
         frame.revalidate();
         frame.repaint();
-        SimulationPanel.requestFocusInWindow();
+        mapPanel.requestFocusInWindow();
 
         simulationTimer = new Timer(700, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 EntityController.step(rabbits, carrots, carrotMap, GRID_SIZE);
-                SimulationPanel.repaint();
+                mapPanel.repaint();
             }
         });
 
@@ -88,7 +141,7 @@ public class Simulator {
         frame.pack();
         frame.setLocationRelativeTo(null);
 
-        frame.setSize(250,200);
+        frame.setSize(250, 200);
 
         frame.setResizable(false);
         frame.setVisible(true);

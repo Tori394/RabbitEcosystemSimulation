@@ -1,4 +1,3 @@
 TODO:
-gnicie marchewki ? + choroby
+choroby
 rozmnazanie krolika
-statystyki

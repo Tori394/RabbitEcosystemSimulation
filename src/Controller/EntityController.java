@@ -6,16 +6,29 @@ import Model.CarrotStates.MatureState;
 import Model.Entities.Rabbit;
 import Model.Entities.EntityType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class EntityController {
     private static Random rn = new Random();
 
+    private static List<ISimulationObserver> observers = new ArrayList<>();
+
+    public static void addObserver(ISimulationObserver observer) {
+        observers.add(observer);
+    }
+
+
+    private static void notifyObservers(int rCount, int cCount) {
+        for (ISimulationObserver observer : observers) {
+            observer.onStatsChanged(rCount, cCount);
+        }
+    }
+
     private static final int[][] directions = {
             {1, 0}, {-1, 0}, {0, -1}, {0, 1}
     };
-
 
     public static void initEntities(int rabbitCount, int carrotCount, int tileSize, int gridSize,
                                     List<Rabbit> rabbits, List<Carrot> carrots) {
@@ -61,6 +74,9 @@ public class EntityController {
     }
 
     public static void step(List<Rabbit> rabbits, List<Carrot> carrots, Carrot[][] carrotMap, int gridSize) {
+        int rabbitsBefore = rabbits.size();
+        int carrotsBefore = carrots.size();
+
         for (Rabbit r : rabbits) {
             r.move(carrots, gridSize, carrotMap);
 
@@ -86,6 +102,13 @@ public class EntityController {
 
         //jak marchewka zgniła to usuń
         carrots.removeIf(c -> c.getState() instanceof DeadState);
+
+        int rabbitsAfter = rabbits.size();
+        int carrotsAfter = carrots.size();
+
+        if (rabbitsAfter != rabbitsBefore || carrotsAfter != carrotsBefore) {
+            notifyObservers(rabbitsAfter, carrotsAfter);
+        }
     }
 
     private static void addCarrot(int x, int y, int tileSize, List<Carrot> list, boolean[][] occupied) {
