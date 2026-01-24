@@ -13,7 +13,7 @@ public class RottenState extends CarrotState {
         carrot.setColor(new Color(80, 72, 33));
         int delay = new Random().nextInt(10) + 5;
         Timer timer = new Timer(delay*1000, e -> {
-            carrot.setState(new DeadState(carrot));
+            carrot.setState(new ExpiredState(carrot));
         });
         timer.setRepeats(false);
         timer.start();

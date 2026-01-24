@@ -1,8 +1,12 @@
 package Model.Entities;
 
+import Model.CarrotStates.CarrotState;
+import Model.CarrotStates.GrowingState;
 import Model.RabbitMoveStrategies.IRabbitMoveStrategy;
 import Model.RabbitMoveStrategies.RandomMoveStrategy;
 import Model.RabbitMoveStrategies.SeekFoodStrategy;
+import Model.RabbitStates.KidState;
+import Model.RabbitStates.RabbitState;
 
 import java.awt.Point;
 import java.awt.Color;
@@ -11,6 +15,7 @@ import java.util.List;
 public class Rabbit extends Entity {
     private IRabbitMoveStrategy currentStrategy = null;
     private int energy;
+    private RabbitState state;
 
     // statystyki
     private int age;
@@ -20,10 +25,12 @@ public class Rabbit extends Entity {
     public Rabbit(int x, int y, int size) {
         this.x = x;
         this.y = y;
-        this.color = new Color(209, 209, 209);
         this.size = size;
         this.energy = 100;
+
         this.currentStrategy = new RandomMoveStrategy();
+        setState(new KidState(this));
+
         this.age = 0;
         this.carrotsEaten = 0;
         this.kids = 0;
@@ -64,8 +71,8 @@ public class Rabbit extends Entity {
 
     public String getStats() {
         String status;
-        if (this.energy < 0) {
-            status = "Dead";
+        if (this.energy <= 0) {
+            status = "Dead";dd
         }
         else if (this.currentStrategy instanceof RandomMoveStrategy) {
             status = "Alive";
@@ -74,6 +81,18 @@ public class Rabbit extends Entity {
             status = "Hungry";
         }
         return status + "\nTimes eaten: " + carrotsEaten + "\nEnergy: " + energy + "/180 \nAge: " + age + "\nKids: " + kids;
+    }
+
+    public Object getState() {
+        return state;
+    }
+
+    public void setState(RabbitState state) {
+        this.state = state;
+    }
+
+    public void setColor(Color color){
+        this.color = color;
     }
 }
 

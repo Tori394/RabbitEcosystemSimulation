@@ -1,10 +1,11 @@
 package Controller;
 
-import Model.CarrotStates.DeadState;
+import Model.CarrotStates.ExpiredState;
 import Model.Entities.Carrot;
 import Model.CarrotStates.MatureState;
 import Model.Entities.Rabbit;
 import Model.Entities.EntityType;
+import Model.RabbitStates.DeadState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,10 +99,10 @@ public class EntityController {
 
         // jak umarł to usuń
         rabbits.removeIf(r -> r.getEnergy() <= 0); //z głodu
-        //rabbits.removeIf(r -> r.getEnergy() <= 0); //ze starości
+        rabbits.removeIf(r -> r.getState() instanceof DeadState); //ze starości
 
         //jak marchewka zgniła to usuń
-        carrots.removeIf(c -> c.getState() instanceof DeadState);
+        carrots.removeIf(c -> c.getState() instanceof ExpiredState);
 
         int rabbitsAfter = rabbits.size();
         int carrotsAfter = carrots.size();
